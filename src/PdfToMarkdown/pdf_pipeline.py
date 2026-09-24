@@ -26,7 +26,7 @@ def render_page_to_base64(page: fitz.Page, dpi: int = 150) -> str:
 def ocr_page_image(
     client: OpenAI,
     base64_image: str,
-    model: str = "Qwen3-VL-4B-Instruct-Q4_K_M.gguf",
+    model: str = "Gemma-4-12b-it-qat-q4_0.gguf",
     prompt: str = DEFAULT_OCR_PROMPT,
 ) -> str:
     """Send base64 image to local vision LLM and return Markdown transcription."""
@@ -63,7 +63,7 @@ def convert_pdf_to_markdown(
     output_path: str | Path | None = None,
     base_url: str = "http://localhost:8081/v1",
     api_key: str = "not-needed",
-    model: str = "Qwen3-VL-4B-Instruct-Q4_K_M.gguf",
+    model: str = "Gemma-4-12b-it-qat-q4_0.gguf",
     progress_callback: Callable[[str, str], None] | None = None,
     should_cancel: Callable[[], bool] | None = None,
 ) -> str:

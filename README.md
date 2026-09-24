@@ -7,7 +7,7 @@ App desktop Windows que converte PDF em Markdown usando OCR visual via LLM multi
 Interface gráfica (`customtkinter`, tema escuro estilo chat) que:
 
 1. Permite ao usuário escolher o PDF de entrada (arquivo único ou busca dentro de uma pasta) via diálogo nativo do Windows.
-2. Sobe automaticamente um `llama-server` local com o modelo `Qwen3-VL-4B-Instruct-Q4_K_M.gguf` na porta `8081`.
+2. Sobe automaticamente um `llama-server` local com o modelo de visão `Gemma-4-12b-it-qat-q4_0.gguf` e `mmproj-gemma-4-12b-it-qat-q4_0.gguf` na porta `8081`.
 3. Pede confirmação humana (gate de permissão com botões Permitir / Abortar) antes de iniciar o envio das páginas para o modelo.
 4. Renderiza cada página do PDF como imagem (150 DPI) e envia pro modelo multimodal, solicitando transcrição fiel em Markdown com títulos, tabelas e listas.
 5. Salva o Markdown final consolidado e encerra o `llama-server` automaticamente ao fechar o app.
@@ -19,7 +19,8 @@ Todo o processamento roda em thread separada da UI — a janela nunca trava dura
 - **Sistema Operacional**: Windows.
 - **Python**: 3.12+.
 - **llama-server.exe**: instalado localmente no PATH do sistema.
-- **Modelo Multimodal**: arquivo `Qwen3-VL-4B-Instruct-Q4_K_M.gguf` localizado em `C:\LLamaModels\`.
+- **Modelo Multimodal**: arquivos `Gemma-4-12b-it-qat-q4_0.gguf` e `mmproj-gemma-4-12b-it-qat-q4_0.gguf` localizados em `C:\LLamaModels\`.
+
 
 ## Como Executar a Aplicação
 

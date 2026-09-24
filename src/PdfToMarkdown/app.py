@@ -212,7 +212,7 @@ class PdfToMarkdownApp(ctk.CTk):
     def _start_server_background(self) -> None:
         """Launch llama-server and monitor health in a daemon thread."""
         def run():
-            self.add_bubble("Iniciando llama-server local com Qwen3-VL...", "sistema")
+            self.add_bubble("Iniciando llama-server local com Gemma-4-12B Vision...", "sistema")
             model_dir = r"C:\LLamaModels"
             if os.path.exists(model_dir):
                 has_mmproj = any("mmproj" in f.lower() and f.endswith(".gguf") for f in os.listdir(model_dir))

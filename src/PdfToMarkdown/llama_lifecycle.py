@@ -11,7 +11,7 @@ import httpx
 
 logger = logging.getLogger(__name__)
 
-DEFAULT_MODEL_PATH = r"C:\LLamaModels\Qwen3-VL-4B-Instruct-Q4_K_M.gguf"
+DEFAULT_MODEL_PATH = r"C:\LLamaModels\Gemma-4-12b-it-qat-q4_0.gguf"
 DEFAULT_PORT = 8081
 HEALTH_URL_TEMPLATE = "http://localhost:{port}/health"
 
