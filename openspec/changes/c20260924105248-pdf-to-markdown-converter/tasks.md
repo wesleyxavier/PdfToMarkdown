@@ -65,4 +65,4 @@
 ## 7. Create PR
 
 - [x] 7.1 Commit final + push
-- [ ] 7.2 Criar PR (`feature/pdf-to-markdown-converter` → branch padrão do projeto)
+- [x] 7.2 Criar PR (`feature/pdf-to-markdown-converter` → branch padrão do projeto)
