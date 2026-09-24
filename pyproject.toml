@@ -7,8 +7,12 @@ name = "pdf-to-markdown"
 version = "0.1.0"
 description = "Conversor de PDF para Markdown"
 readme = "README.md"
-requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "customtkinter>=5.2.0",
+    "pymupdf>=1.24.0",
+    "openai>=1.30.0",
+    "httpx>=0.27.0",
+]
 
 [project.optional-dependencies]
 dev = [
@@ -25,5 +29,5 @@ testpaths = ["tests"]
 pythonpath = ["src"]
 
 [tool.ruff.lint]
-ignore = ["N999"]
+ignore = ["N999", "BLE001", "S110"]
 

@@ -20,6 +20,8 @@ graphify-out/
 **/__pycache__/
 **/.venv/
 **/venv/
+.coverage
+coverage.xml
 
 # Editor/OS
 **/.vscode/

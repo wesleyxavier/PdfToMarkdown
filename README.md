@@ -6,27 +6,37 @@ App desktop Windows que converte PDF em Markdown usando OCR visual via LLM multi
 
 Interface gráfica (`customtkinter`, tema escuro estilo chat) que:
 
-1. Deixa o usuário escolher o PDF de entrada (arquivo único ou busca dentro de uma pasta), via diálogo nativo do Windows.
+1. Permite ao usuário escolher o PDF de entrada (arquivo único ou busca dentro de uma pasta) via diálogo nativo do Windows.
 2. Sobe automaticamente um `llama-server` local com o modelo `Qwen3-VL-4B-Instruct-Q4_K_M.gguf` na porta `8081`.
-3. Pede confirmação do usuário (gate de permissão) antes de começar o envio das páginas pro modelo.
-4. Renderiza cada página do PDF como imagem e envia pro modelo, pedindo transcrição em Markdown preservando formatação (títulos, tabelas, listas).
+3. Pede confirmação humana (gate de permissão com botões Permitir / Abortar) antes de iniciar o envio das páginas para o modelo.
+4. Renderiza cada página do PDF como imagem (150 DPI) e envia pro modelo multimodal, solicitando transcrição fiel em Markdown com títulos, tabelas e listas.
 5. Salva o Markdown final consolidado e encerra o `llama-server` automaticamente ao fechar o app.
 
-Todo o processamento roda em thread separada — a janela nunca trava durante a conversão.
+Todo o processamento roda em thread separada da UI — a janela nunca trava durante a conversão.
 
 ## Requisitos
 
-- Windows.
-- Python 3.12+.
-- `llama-server.exe` instalado localmente — ver skill `llama-local-ai` do harness pra setup.
-- Modelo `Qwen3-VL-4B-Instruct-Q4_K_M.gguf` disponível em `C:\LLamaModels\`.
+- **Sistema Operacional**: Windows.
+- **Python**: 3.12+.
+- **llama-server.exe**: instalado localmente no PATH do sistema.
+- **Modelo Multimodal**: arquivo `Qwen3-VL-4B-Instruct-Q4_K_M.gguf` localizado em `C:\LLamaModels\`.
 
-## Desenvolvimento (Setup, Testes e Docker)
+## Como Executar a Aplicação
 
-### 1. Criar ambiente virtual e instalar dependências
+```bash
+# Ativar o ambiente virtual
+.venv\Scripts\activate
+
+# Iniciar o aplicativo desktop
+python -m PdfToMarkdown
+```
+
+## Desenvolvimento e Testes
+
+### 1. Instalar dependências
 ```bash
 python -m venv .venv
-.venv\Scripts\activate  # No Windows
+.venv\Scripts\activate
 pip install -e ".[dev]"
 ```
 
@@ -35,9 +45,9 @@ pip install -e ".[dev]"
 ruff check .
 ```
 
-### 3. Executar Testes
+### 3. Executar Testes Unitários e Cobertura
 ```bash
-pytest
+pytest --cov=src/PdfToMarkdown --cov-report=term-missing
 ```
 
 ### 4. Build e Execução via Docker
@@ -49,15 +59,10 @@ docker build -t pdftomarkdown:latest .
 docker run --rm pdftomarkdown:latest
 ```
 
-## Como será construído
+## Arquitetura
 
-Implementação segue a change OpenSpec `openspec/changes/c20260924105248-pdf-to-markdown-converter/` (proposal, design, specs, tasks). Resumo das decisões técnicas em `design.md`:
-
-- **GUI**: `customtkinter`, sem servidor web.
-- **PDF → imagem**: `PyMuPDF` (`fitz`), 150 DPI.
-- **OCR visual**: chamada ao endpoint OpenAI-compatible do `llama-server` local (SDK `openai` como client HTTP).
-- **Ciclo de vida do `llama-server`**: subido via `subprocess.Popen` pelo próprio app, encerrado via `atexit` + `WM_DELETE_WINDOW`.
-
-## Status
-
-Scaffold do projeto configurado (`bootstrap-setup` — pyproject, estrutura em 4 camadas, pytest, Docker, CI).
+O projeto adota Clean Architecture de 4 camadas:
+- **`Domain/`**: Entidades e regras de domínio.
+- **`Application/`**: Orquestração e pipeline de conversão de PDFs (`pdf_pipeline.py`).
+- **`Infrastructure/`**: Gerenciamento de processos locais e subprocessos do servidor de IA (`llama_lifecycle.py`).
+- **`Api/`**: Camada de apresentação e interface desktop CustomTkinter (`app.py`).
