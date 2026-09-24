@@ -2,28 +2,28 @@
 
 ## 0. Setup
 
-- [ ] 0.1 **Fixar versão do Python e criar `.venv`**
+- [x] 0.1 **Fixar versão do Python e criar `.venv`**
   - **Done:** `python --version` bate com a versão fixada em `pyproject.toml`
 
 ## 1. Estrutura
 
-- [ ] 1.1 **Criar `pyproject.toml` e estrutura `src/PdfToMarkdown/`**
+- [x] 1.1 **Criar `pyproject.toml` e estrutura `src/PdfToMarkdown/`**
   - **Done:** `pip install -e .` completa sem erro
 
-- [ ] 1.2 **Configurar pytest e um teste smoke**
+- [x] 1.2 **Configurar pytest e um teste smoke**
   - **Done:** `pytest` passa com 1+ teste
 
 ## Docker e CI
 
-- [ ] D.1 **Criar `Dockerfile` multi-stage (build + runtime)**
+- [x] D.1 **Criar `Dockerfile` multi-stage (build + runtime)**
   - **Done:** `docker build .` completa
 
-- [ ] D.2 **Configurar pipeline de CI (lint + test)**
+- [x] D.2 **Configurar pipeline de CI (lint + test)**
   - **Done:** pipeline roda a cada push
 
 ## Documentação
 
-- [ ] Doc.1 **Atualizar README com instruções de build/test/run**
+- [x] Doc.1 **Atualizar README com instruções de build/test/run**
   - **Done:** README documenta os comandos acima
 
 ## Final. PR
