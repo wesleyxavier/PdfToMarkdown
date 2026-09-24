@@ -41,10 +41,25 @@ def start_llama_server(
         logger.info("llama-server is already running.")
         return _current_server_process
 
+    # Procurar arquivo de projeção multimodal (mmproj) na mesma pasta do modelo
+    model_dir = os.path.dirname(model_path)
+    mmproj_candidates = [
+        f for f in os.listdir(model_dir)
+        if "mmproj" in f.lower() and f.endswith(".gguf")
+    ] if os.path.exists(model_dir) else []
+
+    mmproj_arg = []
+    if mmproj_candidates:
+        # Priorizar candidato com nome similar ao modelo ou o primeiro encontrado
+        selected_mmproj = os.path.join(model_dir, mmproj_candidates[0])
+        mmproj_arg = ["--mmproj", selected_mmproj]
+        logger.info("Usando mmproj detectado: %s", selected_mmproj)
+
     cmd = [
         executable,
         "--model",
         model_path,
+        *mmproj_arg,
         "--port",
         str(port),
         "--embedding",
@@ -65,6 +80,7 @@ def start_llama_server(
         "--parallel",
         "1",
     ]
+
     if extra_args:
         cmd.extend(extra_args)
 
@@ -126,23 +142,43 @@ def check_health(
 
 
 def stop_llama_server(proc: subprocess.Popen | None = None) -> None:
-    """Gracefully terminate or kill the llama-server subprocess."""
+    """Gracefully terminate or kill the llama-server subprocess and its children."""
     global _current_server_process
 
     target = proc or _current_server_process
-    if target is None:
-        return
-
-    if target.poll() is None:
-        logger.info("Stopping llama-server process pid=%s...", target.pid)
+    if target is not None:
+        pid = target.pid
+        logger.info("Stopping llama-server process pid=%s...", pid)
+        if os.name == "nt":
+            try:
+                subprocess.run(
+                    ["taskkill", "/F", "/T", "/PID", str(pid)],
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL,
+                    check=False,
+                )
+            except Exception:
+                pass
         try:
             target.terminate()
-            target.wait(timeout=5)
+            target.wait(timeout=2)
         except Exception:
             try:
                 target.kill()
             except Exception:
                 pass
 
-    if target == _current_server_process:
-        _current_server_process = None
+    # Garantia extra no Windows para evitar qualquer processo órfão
+    if os.name == "nt":
+        try:
+            subprocess.run(
+                ["taskkill", "/F", "/IM", "llama-server.exe"],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                check=False,
+            )
+        except Exception:
+            pass
+
+    _current_server_process = None
+

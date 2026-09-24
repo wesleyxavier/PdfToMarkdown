@@ -4,7 +4,7 @@ import base64
 from collections.abc import Callable
 from pathlib import Path
 
-import fitz  # PyMuPDF
+import pymupdf as fitz
 from openai import OpenAI
 
 DEFAULT_OCR_PROMPT = (

@@ -1,6 +1,6 @@
 """Unit tests for PyMuPDF rendering."""
 
-import fitz
+import pymupdf as fitz
 
 from PdfToMarkdown.pdf_pipeline import render_page_to_base64
 

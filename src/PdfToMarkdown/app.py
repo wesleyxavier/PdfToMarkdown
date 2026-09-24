@@ -1,5 +1,6 @@
 """Modern CustomTkinter desktop interface for PdfToMarkdown."""
 
+import os
 import threading
 from pathlib import Path
 from tkinter import filedialog
@@ -212,11 +213,22 @@ class PdfToMarkdownApp(ctk.CTk):
         """Launch llama-server and monitor health in a daemon thread."""
         def run():
             self.add_bubble("Iniciando llama-server local com Qwen3-VL...", "sistema")
+            model_dir = r"C:\LLamaModels"
+            if os.path.exists(model_dir):
+                has_mmproj = any("mmproj" in f.lower() and f.endswith(".gguf") for f in os.listdir(model_dir))
+                if not has_mmproj:
+                    self.add_bubble(
+                        "Aviso: Nenhum arquivo 'mmproj-*.gguf' encontrado em C:\\LLamaModels. "
+                        "Modelos de visão necessitam do projector multimodal (mmproj) para processar imagens.",
+                        "aviso",
+                    )
+
             try:
                 start_llama_server()
             except Exception as err:
                 self.add_bubble(f"Falha ao iniciar processo llama-server: {err}", "erro")
                 return
+
 
             healthy = check_health(status_callback=lambda msg: self.add_bubble(msg, "sistema"))
             if healthy:
