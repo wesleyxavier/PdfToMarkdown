@@ -41,19 +41,28 @@ def start_llama_server(
         logger.info("llama-server is already running.")
         return _current_server_process
 
-    # Procurar arquivo de projeção multimodal (mmproj) na mesma pasta do modelo
+    # Procurar arquivo de projeção multimodal (mmproj) compatível com a família do modelo
     model_dir = os.path.dirname(model_path)
-    mmproj_candidates = [
-        f for f in os.listdir(model_dir)
-        if "mmproj" in f.lower() and f.endswith(".gguf")
-    ] if os.path.exists(model_dir) else []
+    selected_mmproj = None
+    if os.path.exists(model_dir):
+        model_name = os.path.basename(model_path).lower()
+        families = ["qwen", "gemma", "phi", "minicpm", "llava", "mistral", "llama"]
+        matched_family = next((fam for fam in families if fam in model_name), "")
+
+        candidates = [
+            f for f in os.listdir(model_dir)
+            if "mmproj" in f.lower() and f.endswith(".gguf")
+        ]
+        if matched_family:
+            family_candidates = [f for f in candidates if matched_family in f.lower()]
+            if family_candidates:
+                selected_mmproj = os.path.join(model_dir, family_candidates[0])
 
     mmproj_arg = []
-    if mmproj_candidates:
-        # Priorizar candidato com nome similar ao modelo ou o primeiro encontrado
-        selected_mmproj = os.path.join(model_dir, mmproj_candidates[0])
+    if selected_mmproj:
         mmproj_arg = ["--mmproj", selected_mmproj]
-        logger.info("Usando mmproj detectado: %s", selected_mmproj)
+        logger.info("Usando mmproj compatível detectado: %s", selected_mmproj)
+
 
     cmd = [
         executable,
